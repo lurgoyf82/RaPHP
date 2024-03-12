@@ -57,8 +57,6 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'frontend_url' => env('FRONTEND_URL', 'http://dev.torental.raphp.net/'),
-
     'asset_url' => env('ASSET_URL'),
 
     /*

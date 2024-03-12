@@ -1,45 +1,34 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Web Routes
-    |--------------------------------------------------------------------------
-    |
-    | Here is where you can register web routes for your application. These
-    | routes are loaded by the RouteServiceProvider within a group which
-    | contains the "web" middleware group. Now create something great!
-    |
-    */
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
 
-    //$username = 'admin';
-    //$email = 'admin@admin.com';
-    //$password = 'admin';
-    //User::create(['name' => $username, 'email' => $email, 'password' => Hash::make($password)]);
+Route::get('/', function () {
+    return view('welcome');
+});
 
-    Route::controller(AuthController::class)->group(function () {
-        Route::post('login', 'login');
-        Route::post('register', 'register');
-        Route::post('logout', 'logout');
-        Route::post('refresh', 'refresh');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-    });
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-
-    Route::get('/', function () {
-        return ['Laravel' => app()->version()];
-    });
-
-    Route::get('/naggiaddio', function () {
-        return ['Laravel' => app()->version()." naggiaddio"];
-    });
-
-    Route::middleware('auth:api')->group(function () {
-        Route::get('/coddio', function () {
-            return ['Laravel' => app()->version()." coddio"];
-        });
-    });
+require __DIR__.'/auth.php';
 
 
     //Dynamic route generation for controllers.
@@ -72,14 +61,6 @@ use Illuminate\Support\Facades\Route;
         });
     }
 
-
-//    Route::middleware('auth')->group(function () {
-//
-//    });
-
-
-
-    require __DIR__ . '/auth.php';
 
     //    get (tabella)                                       // index
     //    get (tabella/{id})                                  // show

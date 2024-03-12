@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Veicolo extends Model
 {
     use HasFactory;
+
+    protected array $searchable = ['name', 'license_plate'];
 }

@@ -6,10 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "ext-intl": "*",
-        "ext-pdo": "*",
-        "ext-redis": "*",
-        "ext-relay": "*",
         "ably/ably-php": "^1.1",
         "aws/aws-sdk-php": "^3.283",
         "cache/memcached-adapter": "^1.2",
@@ -17,7 +13,7 @@
         "doctrine/dbal": "^3.7",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
-        "laravel/sanctum": "^3.2",
+        "laravel/sanctum": "*",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.4",
         "openai-php/client": "^0.7.3",
@@ -25,12 +21,11 @@
         "predis/predis": "^2.2",
         "spatie/laravel-permission": "^5.11",
         "swayok/alternative-laravel-cache": "^6.1",
-        "swayok/cache-filesystem-adapter": "^1.3",
-        "tymon/jwt-auth": "^2.1"
+        "swayok/cache-filesystem-adapter": "^1.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
-        "laravel/breeze": "^1.22",
+        "laravel/breeze": "*",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
