@@ -17,15 +17,15 @@
     |
     */
     // Public routes
-    //Route::post('login', [LoginController::class, 'login']);
-    //Route::get('login', [LoginController::class, 'login']);
-    //Route::post('logout', [LogoutController::class, 'logout'])->middleware('auth:api');
-    //Route::get('user', [UserController::class, 'user'])->middleware('auth:api');
-    //
-    //Route::middleware('auth:api')->get('/user', function (Request $request) {
-    //    // Place your protected routes here
-    //    Route::get('/profile', function (Request $request) {
-    //        return response()->json($request->user());
-    //    });
-    //});
+    Route::post('login', [LoginController::class, 'login']);
+    Route::get('login', [LoginController::class, 'login']);
+    Route::post('logout', [LogoutController::class, 'logout'])->middleware('auth:api');
+    Route::get('user', [UserController::class, 'user'])->middleware('auth:api');
+
+    Route::middleware('auth:api')->get('/user', function (Request $request) {
+        // Place your protected routes here
+        Route::get('/profile', function (Request $request) {
+            return response()->json($request->user());
+        });
+    });
 

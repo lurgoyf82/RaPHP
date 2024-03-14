@@ -45,6 +45,11 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+        'jwt' => [
+            'driver' => 'passport', // Ensure this is set to 'passport' for Laravel Passport
+            'provider' => 'users',
+            'hash' => false,
+        ],
     ],
 
     /*

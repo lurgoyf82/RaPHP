@@ -36,6 +36,12 @@
     require __DIR__ . '/api.php';
     require __DIR__ . '/jwt.php';
 
+
+    Route::post('jwt/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('jwt.login');
+    Route::get('jwt/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('jwt.login');
+    Route::post('jwt/logout', [App\Http\Controllers\Auth\LogoutController::class, 'logout'])->middleware('auth:api');
+    Route::get('jwt/user', [App\Http\Controllers\UserController::class, 'user'])->middleware('auth:api');
+
     //Dynamic route generation for controllers.
     //Mappings are defined in config/table_controller_mappings.php.
     //This approach helps keep our routing organized and scalable as the project grows.
