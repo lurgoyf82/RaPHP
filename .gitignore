@@ -3,16 +3,11 @@
 /public/build
 /public/hot
 /public/storage
-/storage/logs/
-/storage/framework/sessions/
-/storage/framework/cache/
-/storage/framework/views/
 /storage/*.key
 /vendor
 .env
 .env.backup
 .env.production
-.phpunit.result.cache
 Homestead.json
 Homestead.yaml
 auth.json
@@ -21,6 +16,3 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/database/*.sqlite
-*.log
-*.bak

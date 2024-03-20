@@ -7,27 +7,20 @@
 
     class JwtController extends Controller
     {
-        private mixed $key = false; // Use a strong secret key
-
-        public function __construct()
-        {
-            //$this->middleware('auth:api', ['except' => ['login']]);
-            $this->key = env('JWT_SECRET');
-        }
+        private $key = 'yourSecretKey'; // Use a strong secret key
 
         public function login(Request $request)
         {
-            dd("mistako");
-//            $credentials = $request->only('email', 'password');
-//
-//            if (Auth::attempt($credentials)) {
-//                $user = Auth::user();
-//                $token = $this->createToken($user->id);
-//                return response()->json([
-//                    'token' => $token,
-//                    'user' => $user
-//                ]);
-//            }
+            $credentials = $request->only('email', 'password');
+
+            if (Auth::attempt($credentials)) {
+                $user = Auth::user();
+                $token = $this->createToken($user->id);
+                return response()->json([
+                    'token' => $token,
+                    'user' => $user
+                ]);
+            }
 
             return response()->json(['error' => 'Unauthorized'], 401);
         }
