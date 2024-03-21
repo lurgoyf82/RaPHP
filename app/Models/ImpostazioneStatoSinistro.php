@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class ImpostazioneStatoSinistro extends Model
 {
     use HasFactory;
+    protected $table = 'impostazione_stato_sinistro';
 }

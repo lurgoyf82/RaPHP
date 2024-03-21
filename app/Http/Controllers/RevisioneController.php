@@ -6,8 +6,20 @@ use App\Http\Requests\StoreRevisioneRequest;
 use App\Http\Requests\UpdateRevisioneRequest;
 use App\Models\Revisione;
 
-class RevisioneController extends Controller
+class RevisioneController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Revisione.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Revisione::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

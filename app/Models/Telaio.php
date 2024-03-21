@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Telaio extends Model
 {
     use HasFactory;
+    protected $table = 'telaio';
 }

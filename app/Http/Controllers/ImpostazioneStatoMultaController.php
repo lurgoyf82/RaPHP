@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneStatoMultaRequest;
 use App\Http\Requests\UpdateImpostazioneStatoMultaRequest;
 use App\Models\ImpostazioneStatoMulta;
 
-class ImpostazioneStatoMultaController extends Controller
+class ImpostazioneStatoMultaController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneStatoMulta.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneStatoMulta::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

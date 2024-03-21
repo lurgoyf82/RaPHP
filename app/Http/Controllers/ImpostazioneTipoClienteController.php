@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneTipoClienteRequest;
 use App\Http\Requests\UpdateImpostazioneTipoClienteRequest;
 use App\Models\ImpostazioneTipoCliente;
 
-class ImpostazioneTipoClienteController extends Controller
+class ImpostazioneTipoClienteController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneTipoCliente.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneTipoCliente::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

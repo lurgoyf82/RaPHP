@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class ImpostazioneCaselloPedaggio extends Model
 {
     use HasFactory;
+    protected $table = 'impostazione_casello_pedaggio';
 }

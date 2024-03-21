@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneScadenzaAssicurazioneRequest;
 use App\Http\Requests\UpdateImpostazioneScadenzaAssicurazioneRequest;
 use App\Models\ImpostazioneScadenzaAssicurazione;
 
-class ImpostazioneScadenzaAssicurazioneController extends Controller
+class ImpostazioneScadenzaAssicurazioneController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneScadenzaAssicurazione.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneScadenzaAssicurazione::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

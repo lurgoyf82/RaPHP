@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneStatoSinistroRequest;
 use App\Http\Requests\UpdateImpostazioneStatoSinistroRequest;
 use App\Models\ImpostazioneStatoSinistro;
 
-class ImpostazioneStatoSinistroController extends Controller
+class ImpostazioneStatoSinistroController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneStatoSinistro.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneStatoSinistro::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

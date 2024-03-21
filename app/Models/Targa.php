@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Targa extends Model
 {
     use HasFactory;
+    protected $table = 'targa';
 }

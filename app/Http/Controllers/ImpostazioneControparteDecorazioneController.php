@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneControparteDecorazioneRequest;
 use App\Http\Requests\UpdateImpostazioneControparteDecorazioneRequest;
 use App\Models\ImpostazioneControparteDecorazione;
 
-class ImpostazioneControparteDecorazioneController extends Controller
+class ImpostazioneControparteDecorazioneController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneControparteDecorazione.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneControparteDecorazione::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

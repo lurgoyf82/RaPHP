@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Intervento extends Model
 {
     use HasFactory;
+    protected $table = 'intervento';
 }

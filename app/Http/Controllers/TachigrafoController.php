@@ -6,8 +6,20 @@ use App\Http\Requests\StoreTachigrafoRequest;
 use App\Http\Requests\UpdateTachigrafoRequest;
 use App\Models\Tachigrafo;
 
-class TachigrafoController extends Controller
+class TachigrafoController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Tachigrafo.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Tachigrafo::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

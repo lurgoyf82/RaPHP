@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneTipoVeicoloRequest;
 use App\Http\Requests\UpdateImpostazioneTipoVeicoloRequest;
 use App\Models\ImpostazioneTipoVeicolo;
 
-class ImpostazioneTipoVeicoloController extends Controller
+class ImpostazioneTipoVeicoloController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneTipoVeicolo.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneTipoVeicolo::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneCaselloPedaggioRequest;
 use App\Http\Requests\UpdateImpostazioneCaselloPedaggioRequest;
 use App\Models\ImpostazioneCaselloPedaggio;
 
-class ImpostazioneCaselloPedaggioController extends Controller
+class ImpostazioneCaselloPedaggioController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneCaselloPedaggio.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneCaselloPedaggio::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

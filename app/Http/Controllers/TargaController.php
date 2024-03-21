@@ -6,8 +6,20 @@ use App\Http\Requests\StoreTargaRequest;
 use App\Http\Requests\UpdateTargaRequest;
 use App\Models\Targa;
 
-class TargaController extends Controller
+class TargaController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Targa.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Targa::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

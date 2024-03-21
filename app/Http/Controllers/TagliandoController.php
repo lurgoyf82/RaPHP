@@ -6,8 +6,20 @@ use App\Http\Requests\StoreTagliandoRequest;
 use App\Http\Requests\UpdateTagliandoRequest;
 use App\Models\Tagliando;
 
-class TagliandoController extends Controller
+class TagliandoController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Tagliando.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Tagliando::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

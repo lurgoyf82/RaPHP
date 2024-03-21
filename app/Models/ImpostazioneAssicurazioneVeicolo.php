@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class ImpostazioneAssicurazioneVeicolo extends Model
 {
     use HasFactory;
+    protected $table = 'impostazione_assicurazione_veicolo';
 }

@@ -13,7 +13,6 @@
 	class AlertBase extends BaseModel
 	{
 		use HasFactory;
-
 		protected $table = 'assicurazione'; // Default table
 		public static function getCurrentValidList ($calculateNewCachedData = false) : mixed
 		{
@@ -227,100 +226,104 @@
 
 			return self::resultToPagination($result,$page,$slice);
 		}
-		public static function getAggregatedAlertsListNew($search=null,$order='livello',$page=1,$slice=true): LengthAwarePaginator
-		{
-			//CHECK CACHE
-			//GET ALL VEHICLES
-			//UPDATE VEHICLES WITH VALID CONTRACTS
-			//UPDATE VEHICLES WITH EXPIRED CONTRACTS
-			//UPDATE VEHICLES WITH STARTING NEXT CONTRACTS
-			//CREATE DICTIONARY
-			//ADD TO CACHE
-			//RETURN
 
-
-
-			/*
-			$valid = static::getCurrentValidList();
-			$expired = static::getExpiredList();
-			$startingNext = static::getStartingNextList();
-
-			//Checks the order
-			$order=self::setOrder($order);
-			$orderBy=$order['orderBy'];
-			$orderDirection=$order['orderDirection'];
-
-			//Get all the vehicles considering the search
-			$result=self::getFilteredVehicles($search, $page, $orderBy, $orderDirection);
-
-			foreach($result as $key => $vehicle) {
-				$vehicle->livello = null;
-				$vehicle->next = null;
-				$vehicle->id = null;
-
-				if(@isset($valid[$vehicle->id_veicolo])) {
-					$vehicle->valid = $valid[$vehicle->id_veicolo];
-					foreach ($vehicle->valid as $contract) {
-						$livello = Carbon::parse($contract->current_valid_fine_validita)->addDay()->diffInDays(Carbon::now()) + 1;
-						if($livello>$vehicle->livello) {
-							$vehicle->livello = $livello;
-							$vehicle->inizio_validita = $contract->current_valid_inizio_validita;
-							$vehicle->fine_validita = $contract->current_valid_fine_validita;
-							$vehicle->id = $contract->current_valid_id;
-						}
-					}
-				} else {
-					$vehicle->valid = false;
-				}
-
-				if(@isset($startingNext[$vehicle->id_veicolo])) {
-					$vehicle->startingNext = $startingNext[$vehicle->id_veicolo];
-					foreach ($vehicle->startingNext as $contract) {
-						$next = Carbon::parse($contract->next_inizio_validita)->diffInDays(Carbon::now());
-						if($next<$vehicle->next) {
-							$vehicle->next = $next;
-							$vehicle->inizio_validita = $contract->next_inizio_validita;
-							$vehicle->fine_validita = $contract->next_fine_validita;
-							$vehicle->id = $contract->next_id;
-						}
-					}
-				} else {
-					$vehicle->startingNext = false;
-				}
-
-				if(@isset($expired[$vehicle->id_veicolo])) {
-					$vehicle->expired = $expired[$vehicle->id_veicolo];
-					if($vehicle->livello===null) {
-						foreach ($vehicle->expired as $contract) {
-							$livello = -(Carbon::now()->diffInDays($contract->expired_fine_validita));
-							if($livello>$vehicle->livello) {
-								$vehicle->livello = $livello;
-								$vehicle->inizio_validita = $contract->expired_inizio_validita;
-								$vehicle->fine_validita = $contract->expired_fine_validita;
-								$vehicle->id = $contract->expired_id;
-							}
-						}
-					}
-				} else {
-					$vehicle->expired = false;
-				}
-
-				if($vehicle->livello > Alert::$thirdThreshold) {
-					unset($result[$key]);
-				}
-			}
-
-			if ($orderBy=='livello') {
-				if($orderDirection=='DESC') {
-					$result=($result->sortByDesc('livello'));
-				} else {
-					$result=($result->sortBy('livello'));
-				}
-			}
-
-			return self::resultToPagination($result,$page,$slice);
-			*/
-		}
+//
+//		public static function getAggregatedAlertsListNew($search=null,$order='livello',$page=1,$slice=true): LengthAwarePaginator
+//		{
+//			//CHECK CACHE
+//			//GET ALL VEHICLES
+//			//UPDATE VEHICLES WITH VALID CONTRACTS
+//			//UPDATE VEHICLES WITH EXPIRED CONTRACTS
+//			//UPDATE VEHICLES WITH STARTING NEXT CONTRACTS
+//			//CREATE DICTIONARY
+//			//ADD TO CACHE
+//			//RETURN
+//
+//
+//
+//			/*
+//			$valid = static::getCurrentValidList();
+//			$expired = static::getExpiredList();
+//			$startingNext = static::getStartingNextList();
+//
+//			//Checks the order
+//			$order=self::setOrder($order);
+//			$orderBy=$order['orderBy'];
+//			$orderDirection=$order['orderDirection'];
+//
+//			//Get all the vehicles considering the search
+//			$result=self::getFilteredVehicles($search, $page, $orderBy, $orderDirection);
+//
+//			foreach($result as $key => $vehicle) {
+//				$vehicle->livello = null;
+//				$vehicle->next = null;
+//				$vehicle->id = null;
+//
+//				if(@isset($valid[$vehicle->id_veicolo])) {
+//					$vehicle->valid = $valid[$vehicle->id_veicolo];
+//					foreach ($vehicle->valid as $contract) {
+//						$livello = Carbon::parse($contract->current_valid_fine_validita)->addDay()->diffInDays(Carbon::now()) + 1;
+//						if($livello>$vehicle->livello) {
+//							$vehicle->livello = $livello;
+//							$vehicle->inizio_validita = $contract->current_valid_inizio_validita;
+//							$vehicle->fine_validita = $contract->current_valid_fine_validita;
+//							$vehicle->id = $contract->current_valid_id;
+//						}
+//					}
+//				} else {
+//					$vehicle->valid = false;
+//				}
+//
+//				if(@isset($startingNext[$vehicle->id_veicolo])) {
+//					$vehicle->startingNext = $startingNext[$vehicle->id_veicolo];
+//					foreach ($vehicle->startingNext as $contract) {
+//						$next = Carbon::parse($contract->next_inizio_validita)->diffInDays(Carbon::now());
+//						if($next<$vehicle->next) {
+//							$vehicle->next = $next;
+//							$vehicle->inizio_validita = $contract->next_inizio_validita;
+//							$vehicle->fine_validita = $contract->next_fine_validita;
+//							$vehicle->id = $contract->next_id;
+//						}
+//					}
+//				} else {
+//					$vehicle->startingNext = false;
+//				}
+//
+//				if(@isset($expired[$vehicle->id_veicolo])) {
+//					$vehicle->expired = $expired[$vehicle->id_veicolo];
+//					if($vehicle->livello===null) {
+//						foreach ($vehicle->expired as $contract) {
+//							$livello = -(Carbon::now()->diffInDays($contract->expired_fine_validita));
+//							if($livello>$vehicle->livello) {
+//								$vehicle->livello = $livello;
+//								$vehicle->inizio_validita = $contract->expired_inizio_validita;
+//								$vehicle->fine_validita = $contract->expired_fine_validita;
+//								$vehicle->id = $contract->expired_id;
+//							}
+//						}
+//					}
+//				} else {
+//					$vehicle->expired = false;
+//				}
+//
+//				if($vehicle->livello > Alert::$thirdThreshold) {
+//					unset($result[$key]);
+//				}
+//			}
+//
+//			if ($orderBy=='livello') {
+//				if($orderDirection=='DESC') {
+//					$result=($result->sortByDesc('livello'));
+//				} else {
+//					$result=($result->sortBy('livello'));
+//				}
+//			}
+//
+//			return self::resultToPagination($result,$page,$slice);
+//			*/
+//		}
+//
+//
 		public static function getAggregatedAlertsListWorking($search=null,$order='livello',$page=1,$slice=true): LengthAwarePaginator
 		{
 			$valid = static::getCurrentValidList();

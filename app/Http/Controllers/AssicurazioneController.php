@@ -6,8 +6,20 @@ use App\Http\Requests\StoreAssicurazioneRequest;
 use App\Http\Requests\UpdateAssicurazioneRequest;
 use App\Models\Assicurazione;
 
-class AssicurazioneController extends Controller
+class AssicurazioneController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Assicurazione.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Assicurazione::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

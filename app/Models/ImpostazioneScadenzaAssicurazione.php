@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class ImpostazioneScadenzaAssicurazione extends Model
 {
     use HasFactory;
+    protected $table = 'impostazione_scadenza_assicurazione';
 }

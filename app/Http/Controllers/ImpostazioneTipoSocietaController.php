@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneTipoSocietaRequest;
 use App\Http\Requests\UpdateImpostazioneTipoSocietaRequest;
 use App\Models\ImpostazioneTipoSocieta;
 
-class ImpostazioneTipoSocietaController extends Controller
+class ImpostazioneTipoSocietaController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneTipoSocieta.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneTipoSocieta::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

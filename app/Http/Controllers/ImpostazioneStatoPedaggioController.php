@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneStatoPedaggioRequest;
 use App\Http\Requests\UpdateImpostazioneStatoPedaggioRequest;
 use App\Models\ImpostazioneStatoPedaggio;
 
-class ImpostazioneStatoPedaggioController extends Controller
+class ImpostazioneStatoPedaggioController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneStatoPedaggio.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneStatoPedaggio::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

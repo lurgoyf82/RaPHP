@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneDisponibilitaVeicoloRequest;
 use App\Http\Requests\UpdateImpostazioneDisponibilitaVeicoloRequest;
 use App\Models\ImpostazioneDisponibilitaVeicolo;
 
-class ImpostazioneDisponibilitaVeicoloController extends Controller
+class ImpostazioneDisponibilitaVeicoloController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneDisponibilitaVeicolo.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneDisponibilitaVeicolo::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

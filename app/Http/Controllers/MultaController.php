@@ -6,8 +6,20 @@ use App\Http\Requests\StoreMultaRequest;
 use App\Http\Requests\UpdateMultaRequest;
 use App\Models\Multa;
 
-class MultaController extends Controller
+class MultaController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Multa.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Multa::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

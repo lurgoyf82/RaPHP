@@ -6,8 +6,20 @@ use App\Http\Requests\StoreTelaioRequest;
 use App\Http\Requests\UpdateTelaioRequest;
 use App\Models\Telaio;
 
-class TelaioController extends Controller
+class TelaioController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Telaio.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Telaio::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

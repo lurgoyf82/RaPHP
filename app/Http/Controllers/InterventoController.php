@@ -6,8 +6,20 @@ use App\Http\Requests\StoreInterventoRequest;
 use App\Http\Requests\UpdateInterventoRequest;
 use App\Models\Intervento;
 
-class InterventoController extends Controller
+class InterventoController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Intervento.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Intervento::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

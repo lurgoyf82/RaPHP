@@ -6,8 +6,21 @@ use App\Http\Requests\StoreBolloRequest;
 use App\Http\Requests\UpdateBolloRequest;
 use App\Models\Bollo;
 
-class BolloController extends Controller
+class BolloController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Bollo.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Bollo::class;
+    }
+
+
     /**
      * Display a listing of the resource.
      */

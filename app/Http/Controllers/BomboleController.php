@@ -6,8 +6,20 @@ use App\Http\Requests\StoreBomboleRequest;
 use App\Http\Requests\UpdateBomboleRequest;
 use App\Models\Bombole;
 
-class BomboleController extends Controller
+class BomboleController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Bombole.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Bombole::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

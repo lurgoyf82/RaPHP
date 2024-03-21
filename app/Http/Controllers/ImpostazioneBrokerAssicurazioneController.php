@@ -6,8 +6,20 @@ use App\Http\Requests\StoreImpostazioneBrokerAssicurazioneRequest;
 use App\Http\Requests\UpdateImpostazioneBrokerAssicurazioneRequest;
 use App\Models\ImpostazioneBrokerAssicurazione;
 
-class ImpostazioneBrokerAssicurazioneController extends Controller
+class ImpostazioneBrokerAssicurazioneController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\ImpostazioneBrokerAssicurazione.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\ImpostazioneBrokerAssicurazione::class;
+    }
+
     /**
      * Display a listing of the resource.
      */

@@ -6,8 +6,21 @@ use App\Http\Requests\StoreAtpRequest;
 use App\Http\Requests\UpdateAtpRequest;
 use App\Models\Atp;
 
-class AtpController extends Controller
+class AtpController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Atp.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Atp::class;
+    }
+
+
     /**
      * Display a listing of the resource.
      */

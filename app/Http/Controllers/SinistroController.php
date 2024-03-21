@@ -6,8 +6,20 @@ use App\Http\Requests\StoreSinistroRequest;
 use App\Http\Requests\UpdateSinistroRequest;
 use App\Models\Sinistro;
 
-class SinistroController extends Controller
+class SinistroController extends RaPHPController
 {
+    /**
+     * Constructor method.
+     *
+     * Initializes the __construct object with the model class \App\Models\Sinistro.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = \App\Models\Sinistro::class;
+    }
+
     /**
      * Display a listing of the resource.
      */
