@@ -9,7 +9,7 @@
         'asse_veicolo' => App\Http\Controllers\ImpostazioneAsseVeicoloController::class,
         'assicurazione_veicolo' => App\Http\Controllers\ImpostazioneAssicurazioneVeicoloController::class,
         'broker_assicurazione' => App\Http\Controllers\ImpostazioneBrokerAssicurazioneController::class,
-        'cambio_veicolo' => App\Http\Controllers\ImpostazioneCambioVeicoloController::class,
+        'cambio_veicolo' => App\Http\Controllers\ImpostazioneCambioVeicoloController::class   ,
         'casello_pedaggio' => App\Http\Controllers\ImpostazioneCaselloPedaggioController::class,
         'controparte_decorazione' => App\Http\Controllers\ImpostazioneControparteDecorazioneController::class,
         'destinazione_veicolo' => App\Http\Controllers\ImpostazioneDestinazioneVeicoloController::class,

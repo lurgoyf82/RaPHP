@@ -1,9 +1,9 @@
 <?php
-	
+
 	use Illuminate\Database\Migrations\Migration;
 	use Illuminate\Database\Schema\Blueprint;
 	use Illuminate\Support\Facades\Schema;
-	
+
 	return new class extends Migration {
 		/**
 		 * Run the migrations.
@@ -13,13 +13,13 @@
 			Schema::create('telaio', function (Blueprint $table) {
 				$table->id();
 				$table->unsignedBigInteger('id_veicolo');
-				$table->string('telaio', 100);
+				$table->string('numero_telaio', 100);
 				$table->timestamps();
-				
+
 				$table->foreign('id_veicolo')->references('id')->on('veicolo');
 			});
 		}
-		
+
 		/**
 		 * Reverse the migrations.
 		 */

@@ -20,6 +20,13 @@ class RaPHPController extends Controller
      *
      * @throws \Exception if the model is not set.
      */
+
+
+
+    protected $relations = [];
+
+
+
     public function __construct()
     {
         //If the model is not set, throw an exception
@@ -35,9 +42,21 @@ class RaPHPController extends Controller
     public function getAll()
     {
         //returns in JSON format all the records from the model
+        $data = $this->model::getAll();
+        return response()->json($data);
+    }
+    /**
+     * Get all records from the specified model.
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function indexOld()
+    {
+        //returns in JSON format all the records from the model
         $data = $this->model::all();
         return response()->json($data);
     }
+
     /**
      * Get all records from the specified model.
      *
@@ -46,8 +65,89 @@ class RaPHPController extends Controller
     public function index()
     {
         //returns in JSON format all the records from the model
-        $data = $this->model::all();
+        $data = $this->model::allWithRelationNames();
         return response()->json($data);
+    }
+
+    public function migrateThis()
+    {
+        //array containing the old field names as key and the new field names as value
+        $aliases = [
+            'id' => 'id',
+            'id_proprietario' => 'id_proprietario',
+            'id_tipo_veicolo' => 'id_tipo_veicolo',
+            'id_tipo_allestimento' => 'id_tipo_allestimento',
+            'id_marca' => 'id_marca',
+            'id_modello' => 'id_modello',
+            'tipo_asse' => 'id_tipo_asse',
+            'tipo_cambio' => 'id_tipo_cambio',
+            'alimentazione' => 'id_alimentazione',
+            'destinazione_uso' => 'id_destinazione_uso'
+        ];
+
+        $skip = [
+            'created_at',
+            'updated_at',
+            'altre_caratteristiche',
+            'data_acquisto',
+            'note_acquisto',
+            'prezzo',
+            'data_vendita',
+            'controparte_vendita',
+            'attiva'
+        ];
+
+        $tableName = (new $this->model)->getTable();
+
+        //get all the data from the old table
+        $rows = $this->model::all()->toArray();
+        $text = null;
+        foreach ($rows as $row) {
+            if ($text != null) {
+                $text .= ",\n";
+            }
+
+            $text .= '[';
+            $count = 0;
+
+            foreach ($row as $fieldName => $fieldValue) {
+                if (in_array($fieldName, $skip)) {
+                    continue;
+                }
+
+                if ($count > 0) {
+                    $text .= ', ';
+                }
+
+                $count++;
+
+                if (array_key_exists($fieldName, $aliases)) {
+                    $fieldName = $aliases[$fieldName];
+                }
+
+                switch ($fieldName) {
+                    case 'created_at':
+                    case 'updated_at':
+                        $text .= "'" . addslashes($fieldName) . "' => NOW() ";
+                        break;
+                    default:
+                        $text .= "'" . addslashes($fieldName) . "' => ";
+                        if($fieldValue == null) {
+                            $text .= 'null ';
+                        } else {
+                            $text .= "'" . addslashes($fieldValue) . "' ";
+                        }
+                        break;
+                }
+
+            }
+            $text .= ']';
+        }
+
+        $text = 'DB::table(\'' . $tableName . '\')->insert(['."\n" . $text ."\n" .  ']);';
+
+        return $text;
+
     }
 
 

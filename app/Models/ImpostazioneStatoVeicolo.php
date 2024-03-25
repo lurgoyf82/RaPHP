@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ImpostazioneStatoVeicolo extends Model
-{
+class ImpostazioneStatoVeicolo extends Shared\ImpostazioneModel {
     use HasFactory;
     protected $table = 'impostazione_stato_veicolo';
 }

@@ -1,12 +1,24 @@
 <?php
 
-namespace App\Models;
+    namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Database\Eloquent\Factories\HasFactory;
+    use Illuminate\Database\Eloquent\Model;
 
-class Telaio extends Model
-{
-    use HasFactory;
-    protected $table = 'telaio';
-}
+    class Telaio extends Shared\BaseModel {
+        use HasFactory;
+
+        // Explicitly defining the table associated with this model
+        protected $table = 'telaio';
+
+        // Mass assignable attributes
+        protected $fillable = ['id_veicolo','numero_telaio'];
+
+        /*
+        *                                   Relationships
+        */
+
+        public function veicolo() {
+            return $this->belongsTo(\App\Models\Veicolo::class, 'id_veicolo');
+        }
+    }

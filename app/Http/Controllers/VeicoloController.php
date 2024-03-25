@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Veicolo;
-use JetBrains\PhpStorm\NoReturn;
+use Illuminate\Http\Request;
+use Illuminate\Support\{Arr, Facades\Http, Facades\Route};
 
 class VeicoloController extends RaPHPController
 {
@@ -17,6 +18,50 @@ class VeicoloController extends RaPHPController
     public function __construct()
     {
         $this->model = \App\Models\Veicolo::class;
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+    //dd($request->all());
+        $validatedData = $this->model::validatePartial($request->all());
+
+        // Remove 'targa' from $validatedData and create Veicolo
+        $veicoloData = Arr::except($validatedData, ['targa', 'data_immatricolazione']);
+        $veicolo = Veicolo::create($veicoloData);
+
+        // Now create Targa with the veicolo ID and the targa value
+        $targaData = [
+            'id_veicolo' => $veicolo->id, // Use the ID of the Veicolo you just created
+            'targa' => strtoupper($validatedData['targa']), // Get the targa value from the original data
+            'data_immatricolazione' => $validatedData['data_immatricolazione'] // Set the data_immatricolazione to today's date
+        ];
+
+        \App\Models\Targa::create($targaData);
+
+
+        //returns JSON successful insert message
+        return response()->json(['message' => 'Veicolo created successfully.', 'ok' => true,
+         'data' => $veicolo ,'status' => 200]);
+
+
+        //return redirect()->route('create_veicolo')->with('success', 'Veicolo created successfully.');
+    }
+
+
+    /**
+     * Get all records from the specified model.
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function index()
+    {
+        //returns in JSON format all the records from the model
+        $data = $this->model::allWithRelationNames();
+        return response()->json($data);
     }
 
 //    public function dashboard()
