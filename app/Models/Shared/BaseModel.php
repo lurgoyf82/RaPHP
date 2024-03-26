@@ -117,7 +117,8 @@
                 }
             }
 
-            return Validator::make($data, $applicableRules, static::validationMessages())->validate();
+            //return Validator::make($data, $applicableRules, static::validationMessages())->validate();
+            return Validator::make($data, $applicableRules, static::validationMessages());
         }
 
         public static function validationRules(): array
@@ -125,44 +126,19 @@
             //$targa = ['required', 'regex:/^[A-Za-z]{2}\s?\d{3}\s?[A-Za-z]{2}$/', 'unique:targa,targa'];
 
             $id_veicolo = 'required|exists:veicolo,id';
-            $targa = ['required', 'regex:/^[A-Z0-9]{5,12}$/i', 'unique:targa,targa'];
-            $data_immatricolazione = 'required|date_format:Y-m-d';
-//            $id_proprietario = 'required|exists:impostazione_proprietario_veicolo,id';
-//            $id_tipo_veicolo = 'required|exists:impostazione_tipo_veicolo,id';
-//            $id_tipo_allestimento = 'required|exists:impostazione_allestimento_veicolo,id';
-//            $id_marca = 'required|exists:impostazione_marca_veicolo,id';
-//            $id_modello = 'required|exists:modello,id';
-//            $id_numero_assi = 'required|integer|min:1|max:4';
-//            $id_tipo_asse = 'required|exists:tipo_asse,id';
-//            $id_tipo_cambio = 'required|exists:tipo_cambio,id';
-//            $id_tipo_alimentazione = 'required|exists:tipo_alimentazione,id';
-//            $id_destinazione_uso = 'required|exists:impostazione_destinazione_veicolo,id';
-//            $destinazione_uso = 'nullable|exists:impostazione_destinazione_veicolo,id';
-
-
-
-
-
-
-
-            $id_proprietario = 'required';
-            $id_tipo_veicolo = 'required';
-            $id_tipo_allestimento = 'required';
-            $id_marca = 'required';
-            $id_modello = 'required';
+            $targa = ['required', 'regex:/^[A-Z0-9]{5,10}$/i', 'unique:targa,targa'];
+            $data_immatricolazione = 'required|date_format:d-m-Y';
+            $id_proprietario = 'required|exists:impostazione_proprietario_veicolo,id';
+            $id_tipo_veicolo = 'required|exists:impostazione_tipo_veicolo,id';
+            $id_tipo_allestimento = 'required|exists:impostazione_allestimento_veicolo,id';
+            $id_marca = 'required|exists:impostazione_marca_veicolo,id';
+            $id_modello = 'required|exists:impostazione_modello_veicolo,id';
             $id_numero_assi = 'required|integer|min:1|max:4';
-            $id_tipo_asse = 'required';
-            $id_tipo_cambio = 'required';
-            $id_tipo_alimentazione = 'required';
-            $id_destinazione_uso = 'required';
-            $destinazione_uso = 'nullable';
-
-
-
-
-
-
-
+            $id_tipo_asse = 'required|exists:impostazione_asse_veicolo,id';
+            $id_tipo_cambio = 'required|exists:impostazione_cambio_veicolo,id';
+            $id_tipo_alimentazione = 'required|exists:impostazione_alimentazione_veicolo,id';
+            $id_destinazione_uso = 'required|exists:impostazione_destinazione_veicolo,id';
+            $destinazione_uso = 'nullable|exists:impostazione_destinazione_veicolo,id';
             $colore = 'nullable|string|max:256';
             $lunghezza_esterna = 'nullable|numeric|min:0';
             $larghezza_esterna = 'nullable|numeric|min:0';
@@ -710,6 +686,13 @@
             return $result;
         }
 
+        public function getCasts() {
+            return $this->casts;
+        }
+
+        public function getFillables() {
+            return $this->fillable;
+        }
 
     }
 

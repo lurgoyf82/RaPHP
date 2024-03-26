@@ -36,16 +36,16 @@
             return $veicolo;
         }
 
-        public static function create($validatedData): Veicolo {
-            if (is_array($validatedData) && array_key_exists('targa', $validatedData)) {
-                $validatedData['targa'] = strtoupper(str_replace(' ', '', $validatedData['targa']));
-            }
-            $veicolo = new \App\Models\Veicolo();
-            $veicolo->fill($validatedData);
-            $veicolo->save();
-
-            return $veicolo;
-        }
+//        public static function create($validatedData): Veicolo {
+//            if (is_array($validatedData) && array_key_exists('targa', $validatedData)) {
+//                $validatedData['targa'] = strtoupper(str_replace(' ', '', $validatedData['targa']));
+//            }
+//            $veicolo = new \App\Models\Veicolo();
+//            $veicolo->fill($validatedData);
+//            $veicolo->save();
+//
+//            return $veicolo;
+//        }
 
 //        public static function allWithRelationNames()
 //        {
