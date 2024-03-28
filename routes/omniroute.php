@@ -6,9 +6,6 @@
         return response()->json(['csrf_token' => csrf_token()]);
     });
 
-
-    Route::post('/veicolo', [\App\Http\Controllers\VeicoloController::class, 'store']);
-
     /*
     * Dynamic route generation for controllers.
     * Mappings are defined in config/table_controller_mappings.php.
@@ -17,32 +14,14 @@
     * The RouteServiceProvider is a good place to define route groups, middleware, and other route-related configurations.
     * The RouteServiceProvider is loaded in the bootstrap/app.php file.
     */
-
-    Route::get('form', [\App\Http\Controllers\OmniRouteController::class, 'autoform']);
-
+    foreach (config('get_only_routes') as $table => $controller) {
+        Route::prefix($table)->name($table . '.')->group(function () use ($table, $controller) {
+            Route::get('/', [$controller, 'index'])->name('index');//->middleware('permission:read_' . $table);//->middleware('role:admin');
+            Route::get('/{id}', [$controller, 'show'])->name('show')->where('id', '[0-9]+');//->middleware('permission:read_' . $table);//->middleware('role:admin');
+        });
+    }
     foreach (config('crud_routes') as $table => $controller) {
         Route::prefix($table)->name($table . '.')->group(function () use ($table, $controller) {
-            //// Standard CRUD Routes
-            //Route::get('/', [$controller, 'index'])->name('index');//->middleware('permission:read_' . $table);//->middleware('role:admin');
-            //Route::get('/create', [$controller, 'create'])->name('create');//->middleware('permission:create_' . $table);//->middleware('role:admin');
-            //Route::post('/', [$controller, 'store'])->name('store');//->middleware('permission:create_' . $table);//->middleware('role:admin');
-            ////Route::get('/{id}', [$controller, 'show'])->name('show');//->middleware('permission:read_' . $table);//->middleware('role:admin');
-            //Route::patch('/{id}', [$controller, 'edit'])->name('edit');//->middleware('permission:update_' . $table);//->middleware('role:admin');
-            //Route::put('/{id}', [$controller, 'update'])->name('update');//->middleware('permission:update_' . $table);//->middleware('role:admin');
-            //Route::delete('/{id}', [$controller, 'destroy'])->name('destroy');//->middleware('permission:delete_' . $table);//->middleware('role:admin');
-            //
-            //// SEARCHES
-            //Route::get('/search/{search}', [$controller, 'search'])->name('search');//->middleware('permission:search_' . $table);//->middleware('role:admin');
-            //Route::get('/{fields}/{exact_search}', [$controller, 'exact_search'])->name('search.exact');//->middleware('permission:search_' . $table);//->middleware('role:admin');
-            //
-            //// ALERT Routes
-            //Route::get('/alert', [$controller, 'alert'])->name('alert.index');//->middleware('permission:alert_' . $table);//->middleware('role:admin');
-            //Route::get('/alert/{livello}', [$controller, 'alert'])->name('alert.level');//->middleware('permission:alert_' . $table);//->middleware('role:admin');
-            //
-            ////FRONTEND Endpoints
-            //Route::get('/getAll', [$controller, 'getAll'])->name('getAll');//->middleware('permission:read_' . $table);//->middleware('role:admin');
-
-
             //RESTful API Default Routes
 
             //Lists all records in the table
@@ -70,14 +49,18 @@
             Route::get('/alert', [$controller, 'alert'])->name('alert');//->middleware('permission:read_' . $table);//->middleware('role:admin');
 
             //Use the function RaPHPController::migrateThis on the current table
-            Route::get('/migrate', [$controller, 'migrateThis'])->name('migrate');//->middleware('permission:read_' . $table);//->middleware('role:admin');
+            //Route::get('/migrate', [$controller, 'migrateThis'])->name('migrate');//->middleware('permission:read_' . $table);//->middleware('role:admin');
         });
     }
+
 
 	//this section of code only works in local environment
 	if (env('APP_ENV') !== 'local') {
 		return;
 	}
 
-	\Illuminate\Support\Facades\Route::get('/omniroute', [\App\Http\Controllers\OmniRouteController::class, 'index']);
-
+    Route::post('/veicolo', [\App\Http\Controllers\VeicoloController::class, 'store']);
+    Route::get('form', [\App\Http\Controllers\OmniRouteController::class, 'index']);
+    Route::get('/omniroute/forminator', [\App\Http\Controllers\OmniRouteController::class, 'forminator']);
+    Route::get('form_veicolo',function() { return view('form_veicolo'); });
+    Route::get('/omniroute', [\App\Http\Controllers\OmniRouteController::class, 'index']);

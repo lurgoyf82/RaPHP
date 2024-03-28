@@ -13,13 +13,14 @@
          * Initializes the __construct object with the model class \App\Models\Veicolo.
          *
          * @return void
+         * @throws \Exception
          */
+
+        protected static $modello = \App\Models\Veicolo::class;
+
         public function __construct() {
             $this->model = \App\Models\Veicolo::class;
-        }
-
-        public function getModel() {
-            return $this->model;
+            parent::__construct();
         }
 
 
@@ -27,7 +28,7 @@
          * Store a newly created resource in storage.
          */
         public function store(Request $request) {
-            $validator = $this->model::validatePartial($request->all());
+            $validator = self::$modello::validatePartial($request->all());
             //$validator = Veicolo::validatePartial($request->all());
 
             if ($validator->fails()) {
@@ -37,6 +38,7 @@
                 //dd($errors,$validator->failed());
 
                 return response()->json([
+                    'ok' => false,
                     'message' => 'Validation failed',
                     'errors' => $errors,
                     'failed' => $validator->failed(),
@@ -45,17 +47,25 @@
             } else {
                 // If validation passes, you can access the validated data
                 $validatedData = $validator->validated();
-                if(array_key_exists('data_immatricolazione', $validatedData)) {
+                if (array_key_exists('data_immatricolazione', $validatedData)) {
                     $validatedData['data_immatricolazione'] = \Carbon\Carbon::createFromFormat('d-m-Y', $validatedData['data_immatricolazione'])->format('Y-m-d');
                 }
-                dd($validatedData,$request->all());
             }
-
-
 
             // Remove 'targa' from $validatedData and create Veicolo
             $veicoloData = Arr::except($validatedData, ['targa', 'data_immatricolazione']);
-            $veicolo = Veicolo::create($veicoloData);
+            $veicolo = $this->model::create($veicoloData);
+
+            //if Veicolo is not created return an error
+            if (!$veicolo) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Validation failed',
+                    'errors' => 'Veicolo not created',
+                    'failed' => '',
+                    'data' => $request->all()
+                ], 400); // 400 is the status code for "Bad Request"
+            }
 
             // Now create Targa with the veicolo ID and the targa value
             $targaData = [

@@ -9,7 +9,7 @@ class Assicurazione extends Shared\BaseModel {
     use HasFactory;
 
     // Explicitly defining the table associated with this model
-    protected $table = 'assicurazione';
+    protected const TABLE = 'assicurazione';
 
     // Mass assignable attributes
     protected $fillable = ['id_proprietario', 'id_tipo_veicolo', 'id_tipo_allestimento', 'id_marca', 'id_modello',
@@ -19,6 +19,7 @@ class Assicurazione extends Shared\BaseModel {
     // Attributes to be cast to native types
     protected $casts = ['lunghezza_esterna' => 'float', 'larghezza_esterna' => 'float', 'massa' => 'float',
         'portata' => 'integer', 'cilindrata' => 'integer', 'potenza' => 'integer', 'numero_assi' => 'integer'];
+
 
     /*
     *                                   Relationships

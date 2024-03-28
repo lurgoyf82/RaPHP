@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRevisioneRequest;
 use App\Http\Requests\UpdateRevisioneRequest;
 use App\Models\Revisione;
+use Illuminate\Http\Request;
 
 class RevisioneController extends RaPHPController
 {
@@ -66,5 +67,16 @@ class RevisioneController extends RaPHPController
     public function destroy(Revisione $revisione)
     {
         //
+    }
+
+    public function alert(Request $request) {
+        //extract $search from $request if present
+        if($request->has('search')) {
+            $search = $request->input('search');
+        } else {
+            $search = null;
+        }
+
+        return Revisione::getAggregatedAlertsList($search);
     }
 }

@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class ImpostazioneAllestimentoVeicolo extends Shared\ImpostazioneModel {
     use HasFactory;
     protected $table = 'impostazione_allestimento_veicolo';
+
+    // Mass assignable attributes
+    protected $fillable = ['nome'];
+
+    // Attributes to be cast to native types
+    protected $casts = ['nome' => 'string'];
+
+    /*
+    *                                   Relationships
+    */
 }

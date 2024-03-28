@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Revisione extends Shared\BaseModel {
     use HasFactory;
+    use Traits\Alertable;
 
     // Explicitly defining the table associated with this model
     protected $table = 'revisione';

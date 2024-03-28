@@ -6,8 +6,54 @@
     use Illuminate\Database\Eloquent\Model;
 
 
-    class Veicolo extends Shared\BaseModel {
+    class Veicolo extends Shared\RaPHPModel {
         use HasFactory;
+
+        public static function store($validatedData): Veicolo {
+            if (is_array($validatedData) && array_key_exists('targa', $validatedData)) {
+                $validatedData['targa'] = strtoupper(str_replace(' ', '', $validatedData['targa']));
+            }
+            $veicolo = new \App\Models\Veicolo();
+            $veicolo->fill($validatedData);
+            $veicolo->save();
+
+            return $veicolo;
+        }
+
+        protected static function commonSelect() {
+            return (['veicolo.*',
+                'impostazione_proprietario_veicolo.nome as proprietario_nome',
+                'impostazione_tipo_veicolo.nome as tipo_veicolo_nome',
+                'impostazione_allestimento_veicolo.nome as tipo_allestimento_nome',
+                'impostazione_marca_veicolo.nome as marca_nome',
+                'impostazione_modello_veicolo.nome as modello_nome',
+                'impostazione_destinazione_veicolo.nome as destinazione_uso_nome',
+                'impostazione_cambio_veicolo.nome as tipo_cambio_nome',
+                'impostazione_asse_veicolo.nome as tipo_asse_nome',
+                'impostazione_alimentazione_veicolo.nome as tipo_alimentazione_nome'
+                , 'targa.targa as targa'
+            ]);
+        }
+
+        protected static function commonJoins($query) {
+            return ($query->leftJoin('impostazione_proprietario_veicolo', 'impostazione_proprietario_veicolo.id', '=', 'veicolo.id_proprietario')
+                ->leftJoin('impostazione_tipo_veicolo', 'impostazione_tipo_veicolo.id', '=', 'veicolo.id_tipo_veicolo')
+                ->leftJoin('impostazione_allestimento_veicolo', 'impostazione_allestimento_veicolo.id', '=', 'veicolo.id_tipo_allestimento')
+                ->leftJoin('impostazione_marca_veicolo', 'impostazione_marca_veicolo.id', '=', 'veicolo.id_marca')
+                ->leftJoin('impostazione_modello_veicolo', 'impostazione_modello_veicolo.id', '=', 'veicolo.id_modello')
+                ->leftJoin('impostazione_asse_veicolo', 'impostazione_asse_veicolo.id', '=', 'veicolo.id_tipo_asse')
+                ->leftJoin('impostazione_cambio_veicolo', 'impostazione_cambio_veicolo.id', '=', 'veicolo.id_tipo_cambio')
+                ->leftJoin('impostazione_destinazione_veicolo', 'impostazione_destinazione_veicolo.id', '=', 'veicolo.id_destinazione_uso')
+                ->leftJoin('impostazione_alimentazione_veicolo', 'impostazione_alimentazione_veicolo.id', '=', 'veicolo.id_alimentazione')
+                ->leftJoin('targa', 'targa.id_veicolo', '=', 'veicolo.id')
+            );
+        }
+
+
+
+        /*
+        *                           Default Definitions
+        */
 
         // Explicitly defining the table associated with this model
         protected $table = 'veicolo';
@@ -21,37 +67,26 @@
         protected $casts = ['lunghezza_esterna' => 'float', 'larghezza_esterna' => 'float', 'massa' => 'float',
             'portata' => 'integer', 'cilindrata' => 'integer', 'potenza' => 'integer', 'numero_assi' => 'integer'];
 
-        protected $DBRelations = ['proprietario', 'tipoVeicolo', 'tipoAllestimento', 'marca', 'modello', 'tipoAsse',
-            'tipoCambio', 'alimentazione', 'destinazioneUso'];
-
-
-        public static function store($validatedData): Veicolo {
-            if (is_array($validatedData) && array_key_exists('targa', $validatedData)) {
-                $validatedData['targa'] = strtoupper(str_replace(' ', '', $validatedData['targa']));
-            }
-            $veicolo = new \App\Models\Veicolo();
-            $veicolo->fill($validatedData);
-            $veicolo->save();
-
-            return $veicolo;
-        }
-
-//        public static function create($validatedData): Veicolo {
-//            if (is_array($validatedData) && array_key_exists('targa', $validatedData)) {
-//                $validatedData['targa'] = strtoupper(str_replace(' ', '', $validatedData['targa']));
-//            }
-//            $veicolo = new \App\Models\Veicolo();
-//            $veicolo->fill($validatedData);
-//            $veicolo->save();
-//
-//            return $veicolo;
-//        }
-
-//        public static function allWithRelationNames()
-//        {
-//            $query = static::query()->from(static::getTableName());
-//            return(static::commonJoins($query)->get(static::commonSelect()));
-//        }
+        // Validation rules
+        protected $validationRules = [
+            'id_proprietario' => 'required|integer|exists:impostazione_proprietario_veicolo,id',
+            'id_tipo_veicolo' => 'required|integer|exists:impostazione_tipo_veicolo,id',
+            'id_tipo_allestimento' => 'required|integer|exists:impostazione_allestimento_veicolo,id',
+            'id_marca' => 'required|integer|exists:impostazione_marca_veicolo,id',
+            'id_modello' => 'required|integer|exists:impostazione_modello_veicolo,id',
+            'id_tipo_asse' => 'required|integer|exists:impostazione_asse_veicolo,id',
+            'id_tipo_cambio' => 'required|integer|exists:impostazione_cambio_veicolo,id',
+            'id_alimentazione' => 'required|integer|exists:impostazione_alimentazione_veicolo,id',
+            'id_destinazione_uso' => 'required|integer|exists:impostazione_destinazione_veicolo,id',
+            'colore' => 'nullable|string',
+            'lunghezza_esterna' => 'nullable|numeric|min:0',
+            'larghezza_esterna' => 'nullable|numeric|min:0',
+            'massa' => 'nullable|numeric|min:0',
+            'portata' => 'nullable|integer|min:0',
+            'cilindrata' => 'nullable|integer|min:0',
+            'potenza' => 'nullable|integer|min:0',
+            'numero_assi' => 'nullable|integer|between:0,10',
+        ];
 
         /*
         *                                   Relationships
@@ -93,42 +128,17 @@
             return $this->belongsTo(\App\Models\ImpostazioneDestinazioneVeicolo::class, 'id_destinazione_uso');
         }
 
-        public static function allWithRelationNames()
-        {
-            $query = static::query()->from(static::getTableName());
-            return(static::commonJoins($query)->get(static::commonSelect()));
-        }
+        /*
+        *                             Additional Functions
+        */
 
-        protected static function commonSelect()
-        {
-            return (['veicolo.*',
-                'impostazione_proprietario_veicolo.nome as proprietario_nome',
-                'impostazione_tipo_veicolo.nome as tipo_veicolo_nome',
-                'impostazione_allestimento_veicolo.nome as tipo_allestimento_nome',
-                'impostazione_marca_veicolo.nome as marca_nome',
-                'impostazione_modello_veicolo.nome as modello_nome',
-                'impostazione_destinazione_veicolo.nome as destinazione_uso_nome',
-                'impostazione_cambio_veicolo.nome as tipo_cambio_nome',
-                'impostazione_asse_veicolo.nome as tipo_asse_nome',
-                'impostazione_alimentazione_veicolo.nome as tipo_alimentazione_nome'
-                ,'targa.targa as targa'
-            ]);
-        }
+//        protected $DBRelations = ['proprietario', 'tipoVeicolo', 'tipoAllestimento', 'marca', 'modello', 'tipoAsse',
+//            'tipoCambio', 'alimentazione', 'destinazioneUso'];
 
-        protected static function commonJoins($query)
-        {
-            return ($query->leftJoin('impostazione_proprietario_veicolo', 'impostazione_proprietario_veicolo.id', '=', 'veicolo.id_proprietario')
-                ->leftJoin('impostazione_tipo_veicolo', 'impostazione_tipo_veicolo.id', '=', 'veicolo.id_tipo_veicolo')
-                ->leftJoin('impostazione_allestimento_veicolo', 'impostazione_allestimento_veicolo.id', '=', 'veicolo.id_tipo_allestimento')
-                ->leftJoin('impostazione_marca_veicolo', 'impostazione_marca_veicolo.id', '=', 'veicolo.id_marca')
-                ->leftJoin('impostazione_modello_veicolo', 'impostazione_modello_veicolo.id', '=', 'veicolo.id_modello')
-                ->leftJoin('impostazione_asse_veicolo', 'impostazione_asse_veicolo.id', '=', 'veicolo.id_tipo_asse')
-                ->leftJoin('impostazione_cambio_veicolo', 'impostazione_cambio_veicolo.id', '=', 'veicolo.id_tipo_cambio')
-                ->leftJoin('impostazione_destinazione_veicolo', 'impostazione_destinazione_veicolo.id', '=', 'veicolo.id_destinazione_uso')
-                ->leftJoin('impostazione_alimentazione_veicolo', 'impostazione_alimentazione_veicolo.id', '=', 'veicolo.id_alimentazione')
-                ->leftJoin('targa', 'targa.id_veicolo', '=', 'veicolo.id')
-            );
-        }
+//        public static function allWithRelationNames() {
+//            $query = static::query()->from(static::getTableName());
+//            return (static::commonJoins($query)->get(static::commonSelect()));
+//        }
 
         /*
         *                             Additional Variables
@@ -150,4 +160,34 @@
         //
         //// Indicates if the model should be timestamped. Default is true.
         //public $timestamps = true;
+
+
+
+//        public static function updateRecord($id, $validatedData): Veicolo {
+//            $veicolo = static::find($id);
+//            if (is_array($validatedData) && array_key_exists('targa', $validatedData)) {
+//                $validatedData['targa'] = strtoupper(str_replace(' ', '', $validatedData['targa']));
+//            }
+//            $veicolo->fill($validatedData);
+//            $veicolo->save();
+//
+//            return $veicolo;
+//        }
+
+//        public static function create($validatedData): Veicolo {
+//            if (is_array($validatedData) && array_key_exists('targa', $validatedData)) {
+//                $validatedData['targa'] = strtoupper(str_replace(' ', '', $validatedData['targa']));
+//            }
+//            $veicolo = new \App\Models\Veicolo();
+//            $veicolo->fill($validatedData);
+//            $veicolo->save();
+//
+//            return $veicolo;
+//        }
+
+//        public static function allWithRelationNames()
+//        {
+//            $query = static::query()->from(static::getTableName());
+//            return(static::commonJoins($query)->get(static::commonSelect()));
+//        }
     }

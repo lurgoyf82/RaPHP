@@ -2,23 +2,41 @@
 
     namespace App\Models\Shared;
 
-    use App\Models\Targa;
-    use Illuminate\Database\Eloquent\Model;
     use Illuminate\Pagination\LengthAwarePaginator;
     use Illuminate\Support\Carbon;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Validator;
     use App\Models\Veicolo;
+    use App\Models\ImpostazioneMarcaVeicolo;
+    use App\Models\ImpostazioneModelloVeicolo;
+    use App\Models\Targa;
 
-    class BaseModel extends Model
+    class BaseModel extends \Illuminate\Database\Eloquent\Model
     {
-        public static $itemsPerPage = 25;
+        /**
+         * @var int $itemsPerPage The number of items to display per page.
+         */
+        public static $itemsPerPage = 25000;
 
+        /**
+         * Retrieves the table name for the current model class.
+         *
+         * @return string The table name.
+         */
         public static function getTableName(): string
         {
             return (new static)->table;
         }
 
+        /**
+         * Applies a search filter to a query.
+         *
+         * @param \Illuminate\Database\Eloquent\Builder $query The query to apply the search filter to.
+         * @param mixed $search The value to search for.
+         * @param string|bool $searchField (optional) The field to search in. Defaults to false.
+         *                                                          Valid options are: 'id', 'id_veicolo', 'targa'.
+         * @return \Illuminate\Database\Eloquent\Builder|null The modified query after applying the search filter.
+         */
         public static function scopeSearch($query, $search, $searchField = false)
         {
             switch ($searchField) {
@@ -38,14 +56,23 @@
             return $query;
         }
 
-
-
+        /**
+         * Retrieve all records from the database with their relation names.
+         *
+         * @return Illuminate\Support\Collection A collection of records with their relation names.
+         */
         public static function allWithRelationNames()
         {
             $query = static::query()->from(static::getTableName());
             return(static::commonJoins($query)->get(static::commonSelect()));
         }
 
+        /**
+         * Add common join conditions to the query.
+         *
+         * @param Builder $query The query builder instance.
+         * @return Builder The modified query builder instance with the common join conditions.
+         */
         protected static function commonJoins($query)
         {
             $query=($query->leftJoin(Veicolo::getTableName(), Veicolo::getTableName().'.id', '=', static::getTableName().'.id_veicolo'));
@@ -57,6 +84,13 @@
             return $query;
         }
 
+        /**
+         * Apply common where conditions to a query for searching.
+         *
+         * @param \Illuminate\Database\Query\Builder $query The query builder instance.
+         * @param string $search The search term.
+         * @return \Illuminate\Database\Query\Builder The modified query builder instance.
+         */
         protected static function commonWheres($query, $search)
         {
             return ($query->orWhere('veicolo.id', '=', $search)
@@ -70,7 +104,7 @@
                 ->orWhere('impostazione_tipo_veicolo.nome', 'LIKE', "%{$search}%")
                 ->orWhere('impostazione_allestimento_veicolo.nome', 'LIKE', "%{$search}%")
                 ->orWhere('impostazione_marca_veicolo.nome', 'LIKE', "%{$search}%")
-                ->orWhere(Modello::getTableName().'nome', 'LIKE', "%{$search}%")
+                ->orWhere(ImpostazioneModelloVeicolo::getTableName().'nome', 'LIKE', "%{$search}%")
                 ->orWhere('destinazione_uso.nome', 'LIKE', "%{$search}%")
                 ->orWhere('tipo_cambio.nome', 'LIKE', "%{$search}%")
                 ->orWhere('tipo_asse.nome', 'LIKE', "%{$search}%")
@@ -78,6 +112,13 @@
                 ->orWhere('targa.targa', 'LIKE', "%{$search}%"));
         }
 
+        /**
+         * CommonSelect method
+         *
+         * This method returns an array containing the columns to be selected in a database query.
+         *
+         * @return array The array containing the columns to be selected.
+         */
         protected static function commonSelect()
         {
             return ([Veicolo::getTableName().'.*',
@@ -105,6 +146,13 @@
                 ]);
         }
 
+        /**
+         * Validate a partial array of data against the validation rules defined in the model.
+         *
+         * @param array $data The partial array of data to validate.
+         *
+         * @return \Illuminate\Validation\Validator The validator instance for further validation or error handling.
+         */
         public static function validatePartial(array $data)
         {
             $rules = static::validationRules();
@@ -121,6 +169,11 @@
             return Validator::make($data, $applicableRules, static::validationMessages());
         }
 
+        /**
+         * Returns an array of validation rules for the specified method.
+         *
+         * @return array The array of validation rules.
+         */
         public static function validationRules(): array
         {
             //$targa = ['required', 'regex:/^[A-Za-z]{2}\s?\d{3}\s?[A-Za-z]{2}$/', 'unique:targa,targa'];
@@ -166,6 +219,11 @@
                 'agenzia', 'polizza', 'tipo_scadenza', 'id_veicolo');
         }
 
+        /**
+         * Returns an array of validation error messages.
+         *
+         * @return array The validation error messages.
+         */
         public static function validationMessages(): array
         {
             $targa = 'Inserire la targa (Controllare non sia già stata inserita)';
@@ -284,6 +342,15 @@
                 'agenzia', 'polizza', 'tipo_scadenza', 'id_veicolo');
         }
 
+        /**
+         * Convert a result set to a paginated response.
+         *
+         * @param mixed $result The result set to be paginated.
+         * @param int $page The page number to retrieve. Default is 1.
+         * @param bool $slice Whether to slice the results for pagination. Default is true.
+         *
+         * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator The paginated result.
+         */
         public static function resultToPagination($result, $page = 1, $slice = true)
         {
             $page = intval($page);
@@ -292,9 +359,9 @@
             }
 
             // Manually slice the results for pagination
-            $offset = ($page - 1) * AlertBase::$itemsPerPage;
+            $offset = ($page - 1) * \App\Models\AlertBase::$itemsPerPage;
             if ($slice) {
-                $itemsForCurrentPage = $result->slice($offset, AlertBase::$itemsPerPage);
+                $itemsForCurrentPage = $result->slice($offset, \App\Models\AlertBase::$itemsPerPage);
             } else {
                 $itemsForCurrentPage = $result;
             }
@@ -302,22 +369,36 @@
             return new LengthAwarePaginator(
                 $itemsForCurrentPage,
                 $result->count(),
-                AlertBase::$itemsPerPage,
+                \App\Models\AlertBase::$itemsPerPage,
                 $page,
                 ['path' => LengthAwarePaginator::resolveCurrentPath()]
             );
         }
 
+        /**
+         * Sets the order for sorting the data.
+         *
+         * @param string $order The order to be set. Expected format is <column>_<direction>.
+         *                      Available values for <column> are: 'marca', 'modello', 'targa'.
+         *                      Available values for <direction> are: 'asc', 'desc'.
+         *                      If <column> is not provided or unrecognized, 'livello' will be used as default.
+         *                      If <direction> is not provided or unrecognized, 'asc' will be used as default.
+         *
+         * @return array An associative array containing the following keys:
+         *               - 'orderBy': The column to order the data by.
+         *               - 'orderDirection': The direction of the ordering (either 'asc' or 'desc').
+         *               - 'order': The original order value.
+         */
         public static function setOrder($order)
         {
             $order = explode('_', $order);
 
             switch (strtolower($order[0])) {
                 case 'marca':
-                    $orderBy = Marca::getTableName() . '.nome';
+                    $orderBy = ImpostazioneMarcaVeicolo::getTableName() . '.nome';
                     break;
                 case 'modello':
-                    $orderBy = Modello::getTableName() . '.nome';
+                    $orderBy = ImpostazioneModelloVeicolo::getTableName() . '.nome';
                     break;
                 case 'targa':
                     $orderBy = Targa::getTableName() . '.targa';
@@ -336,28 +417,37 @@
             return compact('orderBy', 'orderDirection', 'order');
         }
 
+        /**
+         * Get filtered vehicles based on search criteria, page number, order by column and order direction
+         *
+         * @param string|null $search The search keyword to filter vehicles by targa, marca or modello (optional)
+         * @param int $page The page number for pagination (optional, default is 1)
+         * @param string $orderBy The column to sort the results by (optional, default is 'livello')
+         * @param string $orderDirection The direction to sort the results in (optional, default is 'ASC')
+         * @return Illuminate\Support\Collection The filtered vehicles as a collection
+         */
         public static function getFilteredVehicles($search = null, $page = 1, $orderBy = 'livello', $orderDirection = 'ASC')
         {
             $query = DB::table(Veicolo::getTableName())
-                ->leftJoin(Marca::getTableName(), Veicolo::getTableName() . '.id_marca', '=', Marca::getTableName() . '.id')
-                ->leftJoin(Modello::getTableName(), function ($join) {
-                    $join->on(Veicolo::getTableName() . '.id_modello', '=', Modello::getTableName() . '.id')
-                        ->on(Modello::getTableName() . '.id_marca', '=', Marca::getTableName() . '.id');
+                ->leftJoin(ImpostazioneMarcaVeicolo::getTableName(), Veicolo::getTableName() . '.id_marca', '=', ImpostazioneMarcaVeicolo::getTableName() . '.id')
+                ->leftJoin(ImpostazioneModelloVeicolo::getTableName(), function ($join) {
+                    $join->on(Veicolo::getTableName() . '.id_modello', '=', ImpostazioneModelloVeicolo::getTableName() . '.id')
+                        ->on(ImpostazioneModelloVeicolo::getTableName() . '.id_marca', '=', ImpostazioneMarcaVeicolo::getTableName() . '.id');
                 })
                 ->leftJoin(Targa::getTableName(), Targa::getTableName() . '.id_veicolo', '=', Veicolo::getTableName() . '.id')
                 ->select([
-                    Marca::getTableName() . '.id as id_marca',
-                    Marca::getTableName() . '.nome as marca',
-                    Modello::getTableName() . '.id as id_modello',
-                    Modello::getTableName() . '.nome as modello',
+                    ImpostazioneMarcaVeicolo::getTableName() . '.id as id_marca',
+                    ImpostazioneMarcaVeicolo::getTableName() . '.nome as marca',
+                    ImpostazioneModelloVeicolo::getTableName() . '.id as id_modello',
+                    ImpostazioneModelloVeicolo::getTableName() . '.nome as modello',
                     Veicolo::getTableName() . '.id as id_veicolo'
                 ]);
 
             if ($search !== null) {
                 $query->where(function ($query) use ($search) {
                     $query->where(Targa::getTableName() . '.targa', 'LIKE', '%' . $search . '%')
-                        ->orWhere(Marca::getTableName() . '.nome', 'LIKE', '%' . $search . '%')
-                        ->orWhere(Modello::getTableName() . '.nome', 'LIKE', '%' . $search . '%');
+                        ->orWhere(ImpostazioneMarcaVeicolo::getTableName() . '.nome', 'LIKE', '%' . $search . '%')
+                        ->orWhere(ImpostazioneModelloVeicolo::getTableName() . '.nome', 'LIKE', '%' . $search . '%');
                 });
             }
 
@@ -372,6 +462,16 @@
             return $result;
         }
 
+        /**
+         * Retrieves the aggregated list of alerts based on the provided parameters.
+         *
+         * @param string|null $search (optional) The search term to filter the vehicles. Defaults to null.
+         * @param string $order (optional) The field to order the results by. Defaults to 'livello'.
+         * @param int $page (optional) The page number of the pagination. Defaults to 1.
+         * @param bool $slice (optional) Flag indicating whether to return a sliced result. Defaults to true.
+         *
+         * @return LengthAwarePaginator The paginated list of aggregated alerts.
+         */
         public static function getAggregatedAlertsList($search = null, $order = 'livello', $page = 1, $slice = true): LengthAwarePaginator
         {
             //Checks the order
@@ -397,6 +497,12 @@
             return static::resultToPagination($result, $page, $slice);
         }
 
+        /**
+         * Updates the vehicles with the current valid contracts.
+         *
+         * @param array $result The array of vehicles to update.
+         * @return array The updated array of vehicles.
+         */
         private static function updateVehiclesWithCurrentValidContracts($result)
         {
             $valid = static::getCurrentValidList();
@@ -433,6 +539,12 @@
             return $result;
         }
 
+        /**
+         * Updates the vehicles with the next valid contract.
+         *
+         * @param array $result The array of vehicles to be updated.
+         * @return array The updated array of vehicles.
+         */
         private static function updateVehiclesWithNextValidContract($result)
         {
             $startingNext = static::getStartingNextList();
@@ -459,6 +571,12 @@
             return $result;
         }
 
+        /**
+         * Updates vehicles with expired contract information.
+         *
+         * @param array $result The array of vehicles to update.
+         * @return array The updated array of vehicles.
+         */
         private static function updateVehiclesWithExpiredContract($result)
         {
             $expired = static::getExpiredList();
@@ -487,6 +605,78 @@
             return $result;
         }
 
+        /**
+         * Get the filtered vehicles based on the given request parameters.
+         *
+         * @param Request $request The request object containing the search, order, and page parameters.
+         *
+         * @return Illuminate\Support\Collection|array The filtered vehicles.
+         */
+        public static function getFilteredVehiclesNew(Request $request)
+        {
+            $search = $request->input('search', null);
+            $order = $request->input('order', 'livello');
+            $page = $request->input('page', 1);  // default to 1 if not provided
+
+            $order = static::setOrder($order);
+            $orderBy = $order['orderBy'];
+            $orderDirection = $order['orderDirection'];
+
+            $query = DB::table(Veicolo::getTableName())
+                ->leftJoin(ImpostazioneMarcaVeicolo::getTableName(), Veicolo::getTableName() . '.id_marca', '=', ImpostazioneMarcaVeicolo::getTableName() . '.id')
+                ->leftJoin(ImpostazioneModelloVeicolo::getTableName(), function ($join) {
+                    $join->on(Veicolo::getTableName() . '.id_modello', '=', ImpostazioneModelloVeicolo::getTableName() . '.id')
+                        ->on(ImpostazioneModelloVeicolo::getTableName() . '.id_marca', '=', ImpostazioneMarcaVeicolo::getTableName() . '.id');
+                })
+                ->leftJoin(Targa::getTableName(), Targa::getTableName() . '.id_veicolo', '=', Veicolo::getTableName() . '.id')
+                ->select([
+                    ImpostazioneMarcaVeicolo::getTableName() . '.id as id_marca',
+                    ImpostazioneMarcaVeicolo::getTableName() . '.nome as marca',
+                    ImpostazioneModelloVeicolo::getTableName() . '.id as id_modello',
+                    ImpostazioneModelloVeicolo::getTableName() . '.nome as modello',
+                    Veicolo::getTableName() . '.id as id_veicolo'
+                ]);
+
+            if ($search !== null) {
+                $query->where(function ($query) use ($search) {
+                    $query->where(Targa::getTableName() . '.targa', 'LIKE', '%' . $search . '%')
+                        ->orWhere(ImpostazioneMarcaVeicolo::getTableName() . '.nome', 'LIKE', '%' . $search . '%')
+                        ->orWhere(ImpostazioneModelloVeicolo::getTableName() . '.nome', 'LIKE', '%' . $search . '%');
+                });
+            }
+
+            //$query->offset(($page - 1) * AlertBase::$itemsPerPage)->limit(AlertBase::$itemsPerPage);
+
+            if ($orderBy !== 'livello') {
+                $result = $query->orderBy($orderBy, $orderDirection)->get();
+            } else {
+                $result = $query->orderBy(Veicolo::getTableName() . '.id', 'ASC')->get();
+            }
+
+            return $result;
+        }
+
+        /**
+         * Retrieves the casts of the current instance.
+         *
+         * This method returns the casts of the current instance, which specifies
+         * how specific attributes should be cast from and to their respective types.
+         *
+         * @return array The casts of the current instance.
+         */
+        public function getCasts() {
+            return $this->casts;
+        }
+
+        /**
+         * Get the fillable attributes of the model.
+         *
+         * @return array The fillable attributes.
+         */
+        public function getFillables() {
+            return $this->fillable;
+        }
+
         /*
                 public static function getAggregatedAlerts($search=null,$order='livello',$page=1,$slice=true): LengthAwarePaginator
                 {
@@ -506,7 +696,7 @@
                             $orderBy = 'impostazione_marca_veicolo.nome';
                             break;
                         case 'modello':
-                            $orderBy = Modello::getTableName().'nome';
+                            $orderBy = ImpostazioneModelloVeicolo::getTableName().'nome';
                             break;
                         case 'targa':
                             $orderBy = 'targa.targa';
@@ -523,17 +713,17 @@
                     }
 
                     $query = DB::table(Veicolo::getTableName())
-                        ->leftJoin(Marca::getTableName(), Veicolo::getTableName() . '.id_marca', '=', Marca::getTableName() . '.id')
-                        ->leftJoin(Modello::getTableName(), function ($join) {
-                            $join->on(Veicolo::getTableName() . '.id_modello', '=', Modello::getTableName() . '.id')
-                                ->on(Modello::getTableName() . '.id_marca', '=', Marca::getTableName() . '.id');
+                        ->leftJoin(ImpostazioneMarcaVeicolo::getTableName(), Veicolo::getTableName() . '.id_marca', '=', ImpostazioneMarcaVeicolo::getTableName() . '.id')
+                        ->leftJoin(ImpostazioneModelloVeicolo::getTableName(), function ($join) {
+                            $join->on(Veicolo::getTableName() . '.id_modello', '=', ImpostazioneModelloVeicolo::getTableName() . '.id')
+                                ->on(ImpostazioneModelloVeicolo::getTableName() . '.id_marca', '=', ImpostazioneMarcaVeicolo::getTableName() . '.id');
                         })
                         ->leftJoin(Targa::getTableName(), Targa::getTableName() . '.id_veicolo', '=', Veicolo::getTableName() . '.id')
                         ->select([
-                            Marca::getTableName() . '.id as id_marca',
-                            Marca::getTableName() . '.nome as marca',
-                            Modello::getTableName() . '.id as id_modello',
-                            Modello::getTableName() . '.nome as modello',
+                            ImpostazioneMarcaVeicolo::getTableName() . '.id as id_marca',
+                            ImpostazioneMarcaVeicolo::getTableName() . '.nome as marca',
+                            ImpostazioneModelloVeicolo::getTableName() . '.id as id_modello',
+                            ImpostazioneModelloVeicolo::getTableName() . '.nome as modello',
                             Veicolo::getTableName() . '.id as id_veicolo'
                         ]);
 
@@ -541,7 +731,7 @@
                         $query->where(function ($query) use ($search) {
                             $query->where('targa.targa', 'LIKE', '%' . $search . '%')
                                 ->orWhere('impostazione_marca_veicolo.nome', 'LIKE', '%' . $search . '%')
-                                ->orWhere(Modello::getTableName().'nome', 'LIKE', '%' . $search . '%');
+                                ->orWhere(ImpostazioneModelloVeicolo::getTableName().'nome', 'LIKE', '%' . $search . '%');
                         });
                     }
 
@@ -642,57 +832,5 @@
                     );
                 }
         */
-        public static function getFilteredVehiclesNew(Request $request)
-        {
-            $search = $request->input('search', null);
-            $order = $request->input('order', 'livello');
-            $page = $request->input('page', 1);  // default to 1 if not provided
-
-            $order = static::setOrder($order);
-            $orderBy = $order['orderBy'];
-            $orderDirection = $order['orderDirection'];
-
-            $query = DB::table(Veicolo::getTableName())
-                ->leftJoin(Marca::getTableName(), Veicolo::getTableName() . '.id_marca', '=', Marca::getTableName() . '.id')
-                ->leftJoin(Modello::getTableName(), function ($join) {
-                    $join->on(Veicolo::getTableName() . '.id_modello', '=', Modello::getTableName() . '.id')
-                        ->on(Modello::getTableName() . '.id_marca', '=', Marca::getTableName() . '.id');
-                })
-                ->leftJoin(Targa::getTableName(), Targa::getTableName() . '.id_veicolo', '=', Veicolo::getTableName() . '.id')
-                ->select([
-                    Marca::getTableName() . '.id as id_marca',
-                    Marca::getTableName() . '.nome as marca',
-                    Modello::getTableName() . '.id as id_modello',
-                    Modello::getTableName() . '.nome as modello',
-                    Veicolo::getTableName() . '.id as id_veicolo'
-                ]);
-
-            if ($search !== null) {
-                $query->where(function ($query) use ($search) {
-                    $query->where(Targa::getTableName() . '.targa', 'LIKE', '%' . $search . '%')
-                        ->orWhere(Marca::getTableName() . '.nome', 'LIKE', '%' . $search . '%')
-                        ->orWhere(Modello::getTableName() . '.nome', 'LIKE', '%' . $search . '%');
-                });
-            }
-
-            //$query->offset(($page - 1) * AlertBase::$itemsPerPage)->limit(AlertBase::$itemsPerPage);
-
-            if ($orderBy !== 'livello') {
-                $result = $query->orderBy($orderBy, $orderDirection)->get();
-            } else {
-                $result = $query->orderBy(Veicolo::getTableName() . '.id', 'ASC')->get();
-            }
-
-            return $result;
-        }
-
-        public function getCasts() {
-            return $this->casts;
-        }
-
-        public function getFillables() {
-            return $this->fillable;
-        }
-
     }
 
