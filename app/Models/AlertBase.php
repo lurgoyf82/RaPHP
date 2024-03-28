@@ -10,7 +10,7 @@
 	use Illuminate\Support\Facades\Redis;
 	use Illuminate\Support\Facades\Validator;
 
-	class AlertBase extends BaseModel
+	class AlertBase extends Shared\BaseModel
 	{
 		use HasFactory;
 		protected $table = 'assicurazione'; // Default table

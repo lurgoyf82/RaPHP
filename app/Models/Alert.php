@@ -18,6 +18,13 @@
     use App\Models\Tachigrafo;
     use App\Models\Tagliando;
 
+    /**
+     * Class Alert
+     *
+     * This class represents an alert and provides methods for retrieving alert data.
+     *
+     * @package YourPackage
+     */
     class Alert extends AlertBase
     {
         use HasFactory;
